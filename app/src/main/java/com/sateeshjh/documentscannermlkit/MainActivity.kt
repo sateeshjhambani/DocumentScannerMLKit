@@ -16,8 +16,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,6 +29,7 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_PDF
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import com.sateeshjh.documentscannermlkit.ui.theme.DocumentScannerMLKitTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,13 +50,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val imageUris = remember {
-                        mutableStateListOf<Uri>()
+                    var imageUris by remember {
+                        mutableStateOf<List<Uri>>(emptyList())
                     }
                     val scannerLauncher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartIntentSenderForResult(),
-                        onResult = {
-
+                        onResult = { activityResult ->
+                            if (activityResult.resultCode == RESULT_OK) {
+                                val result =
+                                    GmsDocumentScanningResult.fromActivityResultIntent(
+                                        activityResult.data
+                                    )
+                                imageUris = result?.pages?.map { it.imageUri } ?: emptyList()
+                            }
                         }
                     )
 
