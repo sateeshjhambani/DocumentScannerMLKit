@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,6 +33,8 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import com.sateeshjh.documentscannermlkit.ui.theme.DocumentScannerMLKitTheme
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +66,22 @@ class MainActivity : ComponentActivity() {
                                         activityResult.data
                                     )
                                 imageUris = result?.pages?.map { it.imageUri } ?: emptyList()
+
+                                result?.pdf?.let { pdf ->
+                                    val fileOutputStream =
+                                        FileOutputStream(File(filesDir, "scan.pdf"))
+                                    contentResolver.openInputStream(pdf.uri)?.use {
+                                        it.copyTo(fileOutputStream)
+                                    }
+                                }
                             }
                         }
                     )
 
                     Column(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
