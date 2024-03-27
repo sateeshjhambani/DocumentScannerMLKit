@@ -2,7 +2,7 @@
 
 This sample app outlines the surface-level usage of Google's ML Kit Document Scanner API. It can be used to digitize documents. The API also provides a built-in interface to transform scanned docs, docs can be cropped and rotated, and corners can be adjusted as well.
 
-https://github.com/sateeshjhambani/DocumentScannerMLKit/assets/60574717/0790ece2-9993-4c72-a161-7d6a3112d440
+https://github.com/sateeshjhambani/DocumentScannerMLKit/assets/60574717/c0182b4d-4920-4238-8ba5-80a3f199d002
 
 ## Usage
 
